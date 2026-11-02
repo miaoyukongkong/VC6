@@ -1,0 +1,24 @@
+# VC++ 6.0 编译产物
+*.ncb
+*.opt
+*.plg
+*.aps
+*.clw
+*.suo
+*.obj
+*.exe
+*.ilk
+*.pdb
+*.pch
+*.idb
+*.exp
+*.lib
+*.sbr
+*.bsc
+Debug/
+Release/
+
+# 系统文件
+Thumbs.db
+desktop.ini
+.DS_Store
