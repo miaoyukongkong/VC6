@@ -187,6 +187,10 @@ D:\VC6\
 | **6** | **`.dsp` 存绝对路径** | **建工程时选相对路径**；若移动目录打不开，用记事本改 .dsp 里的路径 |
 | 7 | 多工程同目录互相干扰 | 每章单独子目录 ✅ |
 | **8** | **多 main 链接冲突** | 见 §三（done\ 移出 / `#if 0` / Exclude from build）|
+| **9** | 🔴🔴 **`Add Files to Project...` 导致 VC6 闪退**（2026-11-05 实测）| 老式 Common Dialog 在 Win10/11 上崩。**改用 `File → New → Files → C++ Source File` 并勾「Add to project」**（不走文件选择器，不崩）；已有文件需加入时 → **手改 `.dsp`**（见 §十二）|
+| **10** | 🔴 **打开 .dsw 前有多个 MSDEV 僵死进程** | 反复闪退会留僵尸（线程数=0，`taskkill` 报 Access denied）。**它们不影响重开**，重启电脑清掉 |
+
+> 🔴 **坑 9 是本次最浪费时间的坑**：点一次崩一次，4 次之后才发现是对话框问题。
 
 ---
 
@@ -214,7 +218,34 @@ D:\VC6\
 
 ---
 
-## 十一、🚀 下一步
+## 十二、🔴 手动把文件加入工程（绕过闪退的 `Add Files`）
+
+**`Add Files to Project...` 会闪退时，直接改 `.dsp` 文本 —— 100% 可靠：**
+
+**步骤：**
+```
+1. 关闭 VC6（必须关，否则会被覆盖）
+2. 用记事本打开 chNN.dsp
+3. 找到这一段：
+     # Begin Group "Source Files"
+
+     # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+     # End Group
+4. 在 PROP 行之后、# End Group 之前插入：
+
+     # Begin Source File
+
+     SOURCE=.\main.cpp
+     # End Source File
+
+5. 保存（保持 GBK/ANSI 编码，别存成 UTF-8）
+6. 删除同目录的 .ncb 和 .plg（旧缓存）
+7. 重开 .dsw → F7
+```
+
+**⚠️ 注意 `SOURCE=.\文件名.cpp` 必须用相对路径（`.\` 开头），不能写绝对路径。**
+
+## 十三、🚀 下一步
 
 **1. 环境已就绪** —— VC6 里 `File → Open Workspace` 打开 `cpp\hello_VC6\hello_VC6.dsw` 确认能 Build。
 
