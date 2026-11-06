@@ -1,4 +1,4 @@
-# VC++ 6.0 编译产物
+# VC++ 6.0 ???????
 *.ncb
 *.opt
 *.plg
@@ -18,9 +18,20 @@
 Debug/
 Release/
 
-# 系统文件
+# ?????
 Thumbs.db
 desktop.ini
 .DS_Store
-# 备份文件
+# ???????
 *.bak
+# VC6 构建产物（Debug 目录已排除，此处补单文件）
+*.pch
+*.idb
+*.ilk
+*.pdb
+*.obj
+*.exe
+*.log
+
+# 注册表备份
+reg-backup/
