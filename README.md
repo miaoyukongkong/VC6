@@ -189,6 +189,7 @@ D:\VC6\
 | **8** | **多 main 链接冲突** | 见 §三（done\ 移出 / `#if 0` / Exclude from build）|
 | **9** | 🔴🔴 **`Add Files to Project...` 导致 VC6 闪退**（2026-11-05 实测）| 老式 Common Dialog 在 Win10/11 上崩。**改用 `File → New → Files → C++ Source File` 并勾「Add to project」**（不走文件选择器，不崩）；已有文件需加入时 → **手改 `.dsp`**（见 §十二）|
 | **10** | 🔴 **打开 .dsw 前有多个 MSDEV 僵死进程** | 反复闪退会留僵尸（线程数=0，`taskkill` 报 Access denied）。**它们不影响重开**，重启电脑清掉 |
+| **11** | 🔴 **`std::string` 是字节串，不是字符串**（2026-11-07 实测）| VC6 的 `string` 底层是 `char[]`，**GBK 下一个汉字 = 2 字节**。`s.size()` / `s.length()` 返回**字节数**（`"C++语言程序设计"` → **15**，不是 9）；`substr(pos,len)` 的 pos 和 len 也是**字节**，**下标落在汉字中间就会切出半个字 → 乱码**（`"J++语言程序设计".substr(4,6)` → `"镅猿绦"`）。**→ 中文不要用 `substr` 按字符切；要按字处理得自己按 2 字节步进，或改用 `wstring`** |
 
 > 🔴 **坑 9 是本次最浪费时间的坑**：点一次崩一次，4 次之后才发现是对话框问题。
 
@@ -215,7 +216,7 @@ D:\VC6\
 | cl.exe | 🟢 已验证（12.00.8804）—— `Error spawning cl.exe` 已修复（见 §十一）|
 | 第一个工程 | 🟢 `cpp\hello_VC6\`（用户已建并跑通）|
 | **当前工程** | 🟢 `cpp\ch01\`（教材第 1 章）|
-| **C++ 第 1 章进度** | 🟡 **1.2.1 ~ 1.2.5 完成（程序 1-1 ~ 1-7）**，剩余 1.2.6 ~ 1.2.10 |
+| **C++ 第 1 章进度** | 🟢 **1.2 节全部完成（1.2.1 ~ 1.2.10，共 14 个程序）** —— 2026-11-07 收口 |
 
 ### 10.1 学习进度台账
 
@@ -228,18 +229,16 @@ D:\VC6\
 | 1.2.4 | 1-5 引用初始化 | 🟢 | `done/p1-5-reference-initialization.cpp` | `int & r3=(int &)cInt;` 报 **C2440**（`cInt` 是 const）→ 改 `(int &)*(int *)&cInt` |
 | 1.2.5 | 1-6 值传递与引用传递 | 🟢 | `done/p1-6-pass-by-value-and-pass-by-reference.cpp` | 值传递交换无效、引用传递生效 |
 | 1.2.5 | 1-7 引用函数和指针函数 | 🟢 | `done/p1-7-function-returning-a-reference-or-a-pointer.cpp` | `pointValue(oneY)=40;` 是**双层类型错** → 正确写法 **`*pointValue(&oneY)=40;`**。🎯 **引用把 `*`/`&` 藏起来了，指针两个都得自己写** |
-
-**剩余 5 小节：**
-
-| 小节 | 主题 |
-|:--:|---|
-| 1.2.6 | `const` 与指针共同使用 |
-| 1.2.7 | 内联函数 |
-| 1.2.8 | 函数的重载 |
-| 1.2.9 | 指针和动态内存分配 |
-| 1.2.10 | 用 `string` 对象处理字符串 |
+| 1.2.6 | 1-8 常量指针 | 🟢 | `done/p1-8-constant-pointer.cpp` | `const` 的位置决定谁不可改：`const int *p`（指向的不可改）/ `int * const p`（指针本身不可改）/ `const int * const p`（都不可改）|
+| 1.2.7 | 内联函数 | 🟢 | `done/p1-8-7-inline-function.cpp` | 用 `QueryPerformanceCounter` 实测普通函数 vs `inline` 的调用开销；**`inline` 只是给编译器的建议，不保证内联** |
+| 1.2.8 | 函数重载 | 🟢 | `done/p1-8-8-function-overloading.cpp` | 🎯 **返回类型不参与重载** —— `int f(int)` 和 `float f(int)` 不能共存；只有参数列表（个数/类型/顺序）能区分 |
+| 1.2.9 | 指针和动态内存分配 | 🟢 | `done/p1-8-9-pointer-and-dynamic-memory-allocation.cpp` | `new` / `delete` 必须配对；**`delete p;` 之后 `p=0;`** —— 否则是悬空指针 |
+| 1.2.10 | 1-8-10 `string` 的使用 | 🟢 | `done/p1-8-10-usage-of-string.cpp` | 默认构造的 `string` 是空串，`cout` 输出为空白（不是乱码）|
+| 1.2.10 | 1-9 `string` 成员函数 1 | 🟢 | `done/p1-9-usage1-of-string-member-functions.cpp` | `empty()` / `length()` / `size()` |
+| 1.2.10 | 1-10 `string` 成员函数 2 | 🟢 | `done/p1-10-usage2-of-string-member-functions.cpp` | 🔴 **`size()` 返回字节数不是字数**（中文 9 字符 = 15 字节）；**`substr` 的 pos/len 单位是字节**，会把汉字切半个 → 见 §八 坑 11 |
 
 > 🎯 **速率标定：1 小节 ≈ 1h**（W45 周中回顾实测）。
+> ✅ **1.2 节 2026-11-07 全部收口**：14 个程序，10 小时（08:10 ~ 21:03）。
 
 ---
 
@@ -331,10 +330,10 @@ D:\VC6\launch-vc6.bat
 
 ## 十三、🚀 下一步
 
-**1. 教材第 1 章还剩 5 小节** —— `1.2.6` `const` 与指针 / `1.2.7` 内联函数 / `1.2.8` 函数重载 / `1.2.9` 指针与动态内存 / `1.2.10` `string` 对象。
+**1. 教材 1.3 节** —— 1.2 节已收口，按教材往下走（拿到 1.3 目录后补这里）。
 
-**2. 每做完一题** —— 复制到 `done\`，`main.cpp` 清空写下一题（README §三 方案 A）。
+**2. 🔴 合上教材从零重写 1.2 节的 14 个程序**（README §七 第 5 步）—— 实践课是上机闭卷，这节课必须能默写：常量指针三种写法 / `*pointValue(&oneY)=40` / `new`-`delete` 配对 / 函数重载只看参数列表。
 
-**3. 学完一章** —— 🔴 合上教材从零重写一遍（README §七 第 5 步，实践课是上机闭卷）。
+**3. 每做完一题** —— 复制到 `done\`，`main.cpp` 清空写下一题（README §三 方案 A）。
 
 **4. 实践课清单** —— 见 `实践课手写清单\`，学一项勾一项。
