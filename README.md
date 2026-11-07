@@ -175,7 +175,7 @@ D:\VC6\
 
 ---
 
-## 八、VC++ 6.0 已知坑（8 条）
+## 八、VC++ 6.0 已知坑（10 条）
 
 | # | 坑 | 应对 |
 |:--:|---|---|
@@ -211,10 +211,94 @@ D:\VC6\
 | 项 | 状态 |
 |---|:--:|
 | VC++ 6.0 安装 | 🟢 **`D:\VC6Tool\`**（2026-11-02 从中文路径迁入）|
-| IDE 启动 | 🟢 已验证（MSDEV.EXE 正常）|
-| cl.exe | 🟢 已验证（编译器 12.00.8804）|
+| IDE 启动 | 🟢 已验证 —— 🔴 **必须用 `launch-vc6.bat` 启动**（见 §十一）|
+| cl.exe | 🟢 已验证（12.00.8804）—— `Error spawning cl.exe` 已修复（见 §十一）|
 | 第一个工程 | 🟢 `cpp\hello_VC6\`（用户已建并跑通）|
-| **教材目录** | 🔴 **待提供 → 才能按真实章节建工程** |
+| **当前工程** | 🟢 `cpp\ch01\`（教材第 1 章）|
+| **C++ 第 1 章进度** | 🟡 **1.2.1 ~ 1.2.5 完成（程序 1-1 ~ 1-7）**，剩余 1.2.6 ~ 1.2.10 |
+
+### 10.1 学习进度台账
+
+| 小节 | 程序 | 状态 | 归档文件 | 关键点 / 踩坑 |
+|---|:--:|:--:|---|---|
+| 1.2.1 | 1-1 输入输出 | 🟢 | `done/p1-1-input-output.cpp` | 曾错拼 `namespce`、变量名 `ontInt1` 笔误 |
+| 1.2.2 | 1-2 强制类型转换 | 🟢 | `done/p1-2-type-casting.cpp` | 🔴 **`const_cast` 改真正的 const 对象 = 未定义行为**：`ca` 仍打印 30（常量折叠），`*p` 读 40 —— 同一地址两个值 |
+| 1.2.3 | 1-3 带默认值的函数 | 🟢 | `done/p1-3-default-parameters.cpp` | 函数定义须在 `main` 之前（否则 `C2065: undeclared identifier`）；**默认值只能写一次** |
+| 1.2.4 | 1-4 引用的定义和使用 | 🟢 | `done/p1-4-definition-and-usage-of-references.cpp` | |
+| 1.2.4 | 1-5 引用初始化 | 🟢 | `done/p1-5-reference-initialization.cpp` | `int & r3=(int &)cInt;` 报 **C2440**（`cInt` 是 const）→ 改 `(int &)*(int *)&cInt` |
+| 1.2.5 | 1-6 值传递与引用传递 | 🟢 | `done/p1-6-pass-by-value-and-pass-by-reference.cpp` | 值传递交换无效、引用传递生效 |
+| 1.2.5 | 1-7 引用函数和指针函数 | 🟢 | `done/p1-7-function-returning-a-reference-or-a-pointer.cpp` | `pointValue(oneY)=40;` 是**双层类型错** → 正确写法 **`*pointValue(&oneY)=40;`**。🎯 **引用把 `*`/`&` 藏起来了，指针两个都得自己写** |
+
+**剩余 5 小节：**
+
+| 小节 | 主题 |
+|:--:|---|
+| 1.2.6 | `const` 与指针共同使用 |
+| 1.2.7 | 内联函数 |
+| 1.2.8 | 函数的重载 |
+| 1.2.9 | 指针和动态内存分配 |
+| 1.2.10 | 用 `string` 对象处理字符串 |
+
+> 🎯 **速率标定：1 小节 ≈ 1h**（W45 周中回顾实测）。
+
+---
+
+## 十一、🔴🔴 `Error spawning cl.exe` —— 移动安装目录后必须改注册表
+
+**症状**：`F7` / Rebuild All 后 Output **只显示一行** `ch01.exe - 1 error(s)`；`Ctrl+F5` 弹「This file does not exist. Do you want to build it?」→ 点「是」→ 又弹，**无限循环**。**代码本身完全正确。**
+
+**第一步：看完整报错**
+
+VC6 的 Output 窗口太小，只显示最后一行。**用记事本打开 `chNN.plg` —— 那是完整构建日志**：
+
+```
+Compiling...
+Error spawning cl.exe
+```
+
+**根因**
+
+VC6 的编译器路径存在**注册表**里，不跟着安装目录走。把 `D:\Downloads\VC6.0 完整绿色版` 移到 `D:\VC6Tool` 后，注册表 4 项仍是旧路径 → VC6 按旧路径找 `cl.exe` → 找不到。
+
+```
+HKCU\Software\Microsoft\DevStudio\6.0\Build System\Components\Platforms\Win32 (x86)\Directories
+  ├─ Path Dirs
+  ├─ Include Dirs
+  ├─ Library Dirs
+  └─ Source Dirs
+```
+
+**修复三步（逐个踩坑）**
+
+| 步 | 操作 | 结果 |
+|:--:|---|---|
+| 1 | 把 `Directories` 4 项的旧路径改成 `D:\VC6Tool\...` | 🔴 仍失败 —— `Use Environment Paths = 0` 时不生效 |
+| 2 | `Use Environment Paths` 改为 **1** | 🟡 报错变成 `fatal error C1034: iostream: no include path set` —— **说明 cl.exe 已经找到了**，只是缺 INCLUDE |
+| 3 | 补设用户环境变量 `INCLUDE` / `LIB` / `PATH` | ✅ `ch01.exe - 0 error(s), 0 warning(s)` |
+
+**最终配置（用户级环境变量）**
+
+```
+PATH    += D:\VC6Tool\VC98\Bin
+PATH    += D:\VC6Tool\Common\MSDev98\Bin
+INCLUDE  = D:\VC6Tool\VC98\Include;D:\VC6Tool\VC98\ATL\Include;D:\VC6Tool\VC98\MFC\Include
+LIB      = D:\VC6Tool\VC98\Lib;D:\VC6Tool\VC98\MFC\Lib
+```
+
+**⚠️ 坑中坑：`explorer.exe` 的环境变量是旧的**
+
+explorer 开机就启动，拿到的是**旧环境**。**从资源管理器双击 `.dsw` 启动的 VC6 继承 explorer 的旧环境 → 照样报错。**
+
+**解法：用 `launch-vc6.bat` 启动**（脚本内先设好 PATH/INCLUDE/LIB 再启动 msdev.exe）：
+
+```
+D:\VC6\launch-vc6.bat
+```
+
+或者重启电脑让 explorer 拿到新环境。
+
+> 🔴 注册表改完记得导出备份（`reg-backup/`，已 gitignore）。
+> 🔴 **不要用命令行 `cl.exe` 编译自己工程的 `Debug\`** —— 会污染 VC6 的构建状态（`.opt` 与实际不符），加剧弹框循环。验证语法请用临时目录。
 
 ---
 
@@ -247,8 +331,10 @@ D:\VC6\
 
 ## 十三、🚀 下一步
 
-**1. 环境已就绪** —— VC6 里 `File → Open Workspace` 打开 `cpp\hello_VC6\hello_VC6.dsw` 确认能 Build。
+**1. 教材第 1 章还剩 5 小节** —— `1.2.6` `const` 与指针 / `1.2.7` 内联函数 / `1.2.8` 函数重载 / `1.2.9` 指针与动态内存 / `1.2.10` `string` 对象。
 
-**2. 等教材目录** —— 拿到后按真实章节建 `ch01\ ch02\ ...`，每章一个工程。
+**2. 每做完一题** —— 复制到 `done\`，`main.cpp` 清空写下一题（README §三 方案 A）。
 
-**3. 实践课清单** —— 见 `实践课手写清单\`，学一项勾一项。
+**3. 学完一章** —— 🔴 合上教材从零重写一遍（README §七 第 5 步，实践课是上机闭卷）。
+
+**4. 实践课清单** —— 见 `实践课手写清单\`，学一项勾一项。

@@ -1,19 +1,29 @@
 #include <iostream>
 using namespace std;
 
-//为参数abc分别设置默认值
-void func(int a=11, int b=22, int c=33)
+int oneX=10;
+int oneY=20;
+
+//引用作为函数返回值
+int & refValue(int & x)
 {
-	cout<<"a="<<a<<",b="<<b<<",c="<<c<<endl;
+	return x;
+}
+
+//指针作为函数返回值
+int * pointValue(int * x)
+{
+	return x;
 }
 
 int main()
 {
-	// 程序1-3，定义带默认值的函数
-	func();
-	func(66);
-	func(77,99);
-	func(8,88,888);
+	// 程序1-7，引用函数和指针函数
+	refValue(oneX)=30;
+	cout<<"oneX="<<oneX<<endl;
+
+	*pointValue(&oneY)=40;
+	cout<<"oneY="<<oneY<<endl;
 
 	return 0;
 }
