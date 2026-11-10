@@ -1,23 +1,27 @@
-//程序2-2，定义学生类Student
-//2.3 类的初步知识：类声明放 .h，成员函数定义放 .cpp，main 只负责使用
-#include "Student.h"
-#include "myDate.h"
 #include <iostream>
 #include <string>
 using namespace std;
-
 int main()
 {
-	//用带参构造函数造一个日期
-	myDate oneD(1998,1,15);
-	//定义学生对象
-	Student oneS;
-	//设置学生信息和生日
-	oneS.setStudent("张三", oneD);
-	//打印学生信息
-	oneS.printStudent();
-	//测试 getter
-	cout<<"getName() = "<<oneS.getName()<<endl;
-
+	//程序2-8，作用域隐藏规则
+	int a=1;
+	//输出1
+	cout<<a<<endl;
+	for(int i=1;i<2;i++)
+	{
+		int a=2;
+		//输出2
+		cout<<a<<endl;
+	}
+	//输出1
+	cout<<a<<endl;
+	for(int j=1;j<2;j++)
+	{
+		a=3;
+		//输出3
+		cout<<a<<endl;
+	}
+	//输出3
+	cout<<a<<endl;
 	return 0;
 }
