@@ -1,27 +1,32 @@
 #include <iostream>
-#include <string>
 using namespace std;
-int main()
+class Test
 {
-	//程序2-8，作用域隐藏规则
-	int a=1;
-	//输出1
-	cout<<a<<endl;
-	for(int i=1;i<2;i++)
+	int a,b;
+	int getmin()
 	{
-		int a=2;
-		//输出2
-		cout<<a<<endl;
+		return (a<b ? a : b);
 	}
-	//输出1
-	cout<<a<<endl;
-	for(int j=1;j<2;j++)
+public:
+	int c;
+	void setValue(int x1,int x2,int x3)
 	{
-		a=3;
-		//输出3
-		cout<<a<<endl;
+		a=x1;
+		b=x2;
+		c=x3;
 	}
-	//输出3
-	cout<<a<<endl;
-	return 0;
+	int GetMin();
+};
+int Test::GetMin()
+{
+	int d=getmin();
+	return (d = d<c ? d : c);
+}
+int main() {
+	//习题4.2，求最小值
+    Test t1;
+	t1.setValue(34,6,2);
+	cout<<t1.GetMin()<<endl;
+
+    return 0;
 }
