@@ -1,32 +1,50 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
-class Test
+const double pi=3.1415926;
+class Cylinder
 {
-	int a,b;
-	int getmin()
-	{
-		return (a<b ? a : b);
-	}
+private:
+	double r,h;
 public:
-	int c;
-	void setValue(int x1,int x2,int x3)
+	Cylinder(double rVal=0.0,double hVal=0.0): r(rVal), h(hVal)
 	{
-		a=x1;
-		b=x2;
-		c=x3;
+		if(rVal<0) r=0.0;
+		if(hVal<0) h=0.0;
 	}
-	int GetMin();
+
+	//计算底圆周长
+	double getCircleLen() const
+	{
+		return 2*pi*r;
+	}
+
+	//计算底圆面积
+	double getBaseArea() const
+	{
+		return pi*r*r;
+	}
+
+	//计算圆柱体积
+	double getVolume() const
+	{
+		return getBaseArea()*h;
+	}
+
+	//计算圆柱表面积
+	double getSurfaceArea() const
+	{
+		return getCircleLen()*h+getBaseArea()*2;
+	}
 };
-int Test::GetMin()
-{
-	int d=getmin();
-	return (d = d<c ? d : c);
-}
 int main() {
-	//习题4.2，求最小值
-    Test t1;
-	t1.setValue(34,6,2);
-	cout<<t1.GetMin()<<endl;
+	//习题5.4，设计并实现类Cylinder
+	Cylinder cy(3,5);
+
+	cout<<"底圆周长："<<cy.getCircleLen()<<endl;
+	cout<<"底圆面积："<<cy.getBaseArea()<<endl;
+	cout<<"圆柱体积："<<cy.getVolume()<<endl;
+	cout<<"圆柱表面积："<<cy.getSurfaceArea()<<endl;
 
     return 0;
 }
