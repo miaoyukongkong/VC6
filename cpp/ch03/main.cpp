@@ -1,87 +1,61 @@
 #include <iostream>
 #include <string>
 #include "myDate.h"
+#include "Student.h"
 using namespace std;
-
-class Student
+class Demo
 {
+	int id;
+	string position;
 public:
-	//构造函数，无参数
-	Student();
-	//构造函数，1个参数
-	Student(string);
-	void setStudent(string,myDate);
-	void setStudent(string);
-	void setName(string);
-	string getName() const;
-	void setBirthday(myDate);
-	myDate getBirthday() const;
-	void printStudent() const;
-private:
-	string name;
-	myDate birthday;
+	//构造函数
+	Demo(int i,string pos)
+	{
+		id=i;
+		position=pos;
+		cout<<"生成对象"<<this<<",id="<<id<<",position:"<<position<<endl;
+	}
+	//类型转换构造函数
+	Demo(int i):position("temp")
+	{
+		id=i;
+		cout<<"生成对象"<<this<<",id="<<id<<",position:"<<position<<endl;
+	}
+	//析构函数
+	~Demo()
+	{
+		cout<<"消亡对象"<<this<<",id="<<id<<",position:"<<position<<endl;
+	}
 };
-Student::Student():name("Noname"),birthday(myDate()){}
-Student::Student(string n):name(n),birthday(myDate()){}
-void Student::setStudent(string s,myDate d)
+//类外定义，全局
+Demo d1(1,"全局");
+void Func()
 {
-	name=s;
-	birthday.setDate(d);
-	return;
+	cout<<"enter func"<<endl;
+	//函数内定义，静态局部
+	static Demo d2(2,"函数Func内，静态");
+	//函数内定义，局部
+	Demo d3(3,"函数Func内");
+	cout<<"exit func"<<endl;
 }
-void Student::setStudent(string s)
-{
-	name=s;
-	myDate d;
-	birthday.setDate(d);
-	return;
-}
-void Student::setName(string n)
-{
-	name=n;
-	return;
-}
-string Student::getName() const
-{
-	return name;
-}
-void Student::setBirthday(myDate d)
-{
-	birthday.setDate(d);
-	return;
-}
-myDate Student::getBirthday() const
-{
-	return birthday;
-}
-void Student::printStudent() const
-{
-	cout<<"姓名："<<name<<"\t 生日：";
-	//调用类myDate的成员函数
-	birthday.printDate();
-	cout<<endl;
-	return;
-}
-
 int main()
 {
-	//程序3-1-1，类Student+两个构造函数
-	Student stud;
-	Student ss[2];
-	int y,m,d,i;
-	string name_;
-	stud.printStudent();
-
-	for(i=0;i<2;i++)
-		ss[i].printStudent();
-	for(i=0;i<2;i++)
+	//程序3-7，类对象的生存期和作用域
+	cout<<"enter main"<<endl;
+	//主函数内定义
+	Demo d4(4,"主函数内");
+	d4=7;
+	cout<<"enter block"<<endl;
 	{
-		cout<<"请输入学生的姓名和生日，生日以\"年 月 日\"的次序输入：";
-		cin>>name_>>y>>m>>d;
-		ss[i].setStudent(name_,myDate(y,m,d));
+		//主函数块内定义
+		Demo d5(5,"主函数块内");
 	}
-	for(i=0;i<2;i++)
-		ss[i].printStudent();
+	cout<<"exit block"<<endl;
+	//全局和静态对象遵循：后创建先销毁
+	Func();
+	//主函数内定义，静态
+	static Demo d6(6,"主函数内，静态");		
+	cout<<"exit main"<<endl;
 
 	return 0;
 }

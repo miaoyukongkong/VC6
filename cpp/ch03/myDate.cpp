@@ -7,12 +7,18 @@ myDate::myDate()
 	year=1970;
 	month=1;
 	day=1;
+	cout<<"myDate 构造函数"<<endl;
 }
 myDate::myDate(int y,int m,int d)
 {
 	year=y;
 	month=m;
 	day=d;
+}
+//自定义析构函数
+myDate::~myDate()
+{
+	cout<<"myDate 析构函数"<<endl;
 }
 void myDate::setDate(int y,int m,int d)
 {

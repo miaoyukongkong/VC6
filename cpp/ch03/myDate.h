@@ -8,6 +8,8 @@ public:
 	myDate();
 	//构造函数
 	myDate(int,int,int);
+	//自定义析构函数
+	~myDate();
 	//设置日期
 	void setDate(int,int,int);
 	//设置日期

@@ -219,7 +219,7 @@ D:\VC6\
 | **当前工程** | 🟢 `cpp\ch03\`（教材第 3 章）|
 | **C++ 第 1 章进度** | 🟢 **第 1 章全部完成** —— 1.2 节 14 个程序（2026-11-07）＋ 习题 8 题（2026-11-09）|
 | **C++ 第 2 章进度** | 🟢 **第 2 章全部完成**（2026-11-09 → 11-11）：8 个程序（2-1 ~ 2-8）＋ 习题 **10 题**（3.1 / 3.2 / 3.3 / 4.1 / 4.2 / 4.3 / 5.1 / 5.2 / 5.3 / 5.4）全部归档 |
-| **C++ 第 3 章进度** | 🟡 **进行中**（2026-11-12 起）：3.1 构造函数 —— 程序 3-1-1（类 `Student` ＋ 两个构造函数、成员对象 `myDate`）已归档；`ch03` 工程编译 **0 error / 0 warning**（ch03.plg 08:44）|
+| **C++ 第 3 章进度** | 🟡 **进行中**（2026-11-12）：**3.1-3.4 已完成** —— 3.1 构造函数（p3-1-1/1-2/1-3）＋ 3.2 析构函数（p3-2、2-1~2-4）＋ 3.3 静态成员（p3-3、3-4、3-4-1）＋ 3.4 生存期与作用域（p3-5、3-6、3-7），共 15 个程序归档；`ch03` 工程编译 **0 error / 0 warning**（ch03.plg 21:02）|
 
 ### 10.1 学习进度台账
 
@@ -289,7 +289,20 @@ D:\VC6\
 
 | 小节 | 程序 | 状态 | 归档文件 | 关键点 / 踩坑 |
 |---|:--:|:--:|---|---|
-| 3.1 | 程序3-1-1 类 `Student` ＋ 两个构造函数 | 🟢 | `done/p3-1-1-class-Student-and-two-Constructors.cpp`（＝当前 `main.cpp`；工程另含 `myDate.h`/`myDate.cpp`）| 🎯 **重载构造函数**：`Student()` 用初始化列表给默认值（`name("Noname")`、`birthday(myDate())`＝1970/1/1），`Student(string)` 只初始化姓名；**成员对象 `birthday` 先于 `Student` 构造体构造**。`setStudent(string)` 内部再造临时 `myDate` 再 `birthday.setDate(d)` —— 走 `setDate(myDate)` 重载。工程编译 **0 error / 0 warning**（ch03.plg 08:44）|
+| 3.1 | 程序3-1-1 类 `Student` ＋ 两个构造函数 | 🟢 | `done/p3-1-1-class-Student-and-two-Constructors.cpp` | 🎯 **重载构造函数**：`Student()` 用初始化列表给默认值（`name("Noname")`、`birthday(myDate())`＝1970/1/1），`Student(string)` 只初始化姓名；**成员对象 `birthday` 先于 `Student` 构造体构造**。`setStudent(string)` 内部再造临时 `myDate` 再 `birthday.setDate(d)` —— 走 `setDate(myDate)` 重载 |
+| 3.1 | 程序3-1-2 用构造函数生成对象指针数组 | 🟢 | `done/p3-1-2-array-of-object-pointers-by-construcotrs.cpp` | 🎯 `Student *spointer[2]={new Student(),&stud}` 与 `Student sy[2]={Student(),stud}` 的区别：**指针是别名、对象数组是副本**。`stud.setName("222")` 后 `sy` 不变、`spointer[1]` 跟着变；`spointer[0]->setName("333")` 只改堆对象 |
+| 3.1 | 程序3-1-3 自定义复制构造函数 | 🟢 | `done/p3-1-3-custom-copy-Constructor.cpp` | `Student(const Student &s){ name="COPY"+s.name; ... }` → `sy[1]=Student(stud)` 打印 **姓名：COPY111**；自定义复制构造**接管默认逐成员复制**，可做深拷贝/计数 |
+| 3.2 | 程序3-2 类型转换构造函数 | 🟢 | `done/p3-2-conversion-constructor.cpp` | 单参数构造函数 `Demo(int)` 让 `d4=6` 等价 `d4=Demo(6)`：**先构造临时对象 → 赋值 → 析构**（打印顺序即证据）；加 `explicit` 可禁用隐式转换 |
+| 3.2 | 程序3-2-1 自定义析构函数 | 🟢 | `done/p3-2-1-custom-Destructor.cpp` | `new Student()` → `delete stud;` 顺序：**myDate 构造 → Student 构造 → Student 析构 → myDate 析构**（成员对象先构造、后析构）|
+| 3.2 | 程序3-2-2 对象数组＋析构函数 | 🟢 | `done/p3-2-2-object-array-and-Destructor.cpp` | `new Student[2]` / **`delete [] ss;`**：两元素各构造一次，析构**逆序**（LIFO）；`delete[]` 不能写成 `delete` |
+| 3.2 | 程序3-2-3 对象指针数组＋析构函数 | 🟢 | `done/p3-2-3-object-pointer-array-and-Destructor.cpp` | `Student *ss[2]={new Student(),new Student()};` 指针数组只存地址、不自动构造/析构 → 必须 `delete ss[0]; delete ss[1];`（对指针数组用 `delete[]` 是未定义行为）|
+| 3.2 | 程序3-2-4 对象数组后构造先析构 | 🟢 | `done/p3-2-4-object-array-last-constructor-first-destructor.cpp` | `new Samp[5]` 构造 5 次（构造体打印 `i`，此时 `i` 未初始化）；`delete [] p` 逆序析构 **4→0**，验证 LIFO；`if(!p)` 判 `new` 失败是 C++98 惯例 |
+| 3.3 | 程序3-3 静态变量 | 🟢 | `done/p3-3-static-variable.cpp` | 静态局部 `fs` **只初始化一次**、跨调用累加；自动变量 `a` 每次重来 1；静态全局 `glos`、静态局部 `ms` 都是静态存储期（程序结束才销毁）|
+| 3.3 | 程序3-4 静态成员 | 🟢 | `done/p3-4-static-member.cpp` | 🔴 **`static int classA::num;` 必须在类体外定义并初始化**（只声明不定义 → `LNK2001 unresolved external`）；每构造一个对象 `num++`；**静态成员函数没有 `this`**；`sizeof(obj)` 不含静态成员；`类名::`、`对象.`、`指针->` 三种限定符都可用 |
+| 3.3 | 程序3-4-1 输出 100 | 🟢 | `done/p3-4-1-output-100.cpp` | `Test test;` 走默认实参 `i=10` → `x=10+83=**93**`；`test.Getnum()`＝`93+7`＝**100**；静态数据成员 `x` 被所有对象共享（`Test::x` 类外初始化为 83）|
+| 3.4 | 程序3-5 变量生存期和作用域1 | 🟢 | `done/p3-5-example1-of-variable-lifetime-and-scope.cpp` | 块作用域遮蔽：main `i=10/ch='1'` → 外层块 `i=20/ch='2'` → 内层块 `double i=30.3`、`int ch=33`；出块即复原（输出 10/1 → 20/2 → 30.3/33 → 20/2 → 10/1）|
+| 3.4 | 程序3-6 变量生存期和作用域2 | 🟢 | `done/p3-6-example2-of-variable-lifetime-and-scope.cpp` | 文件作用域 `x=11/ch='1'`；`fun1` 内 `int x=201` 遮蔽文件级 `x`（打印 201）；`fun2` 内 `double ch=202.2` 遮蔽文件级 `ch`；两个函数各自的 `i`（21111/22222）互不相干 |
+| 3.4 | 程序3-7 类对象的生存期和作用域 | 🟢 | `done/p3-7-object-lifetime-and-scope.cpp`（＝当前 `main.cpp`）| 全局 `Demo d1` → main 局部 `d4` → 块内 `d5`（出块即析构）→ `Func()` 内静态 `d2`＋局部 `d3`（`d3` 出函数即析构、`d2` 留到程序结束）→ main 内静态 `d6`；**局部先于全局销毁，静态对象后创建先销毁**；`d4=7` 走类型转换构造 |
 
 ---
 
@@ -392,9 +405,9 @@ D:\VC6\launch-vc6.bat
 - ✅ **第 2 章习题 10 题全部归档**（3.1 ~ 5.4，2026-11-11）
   - ✅ 3.1 输出 1020 ／ 3.2 输出 1-10-2 ／ 3.3 成员初始化＋`getc` 改名 ／ 4.1 双重指针 ／ 4.2 求最小值 ／ 4.3 对象指针与对象数组 ／ 5.1 类 Course ／ 5.2 类 Point ／ 5.3 类 MyLine ／ 5.4 类 Cylinder
 
-**2. 第三章：类和对象进阶（8 小节）** —— `cpp\ch03\` 工程已建立（2026-11-12 08:29）。教材 60 页，是第 1 章的两倍，密度最高。
-- ✅ **3.1 构造函数**（2026-11-12 归档，程序 3-1-1：`Student` 两个重载构造函数 ＋ 成员对象 `myDate`） ／ 3.2 析构函数（下一步） ／ 3.3 类的静态成员 ／ 3.4 变量及对象的生存期和作用域
-- 3.5 常量成员和常引用成员 ／ 3.6 成员对象和封闭类 ／ 3.7 友元 ／ 3.8 this 指针
+**2. 第三章：类和对象进阶（8 小节）** —— `cpp\ch03\` 工程（2026-11-12 08:29 建立）。**3.1-3.4 已完成**（08:44 → 21:02，15 个程序归档）；教材 60 页，是第 1 章的两倍，密度最高。
+- ✅ 3.1 构造函数（p3-1-1/1-2/1-3）／ ✅ 3.2 析构函数（p3-2、2-1~2-4：类型转换构造、对象数组/指针数组、LIFO 析构）／ ✅ 3.3 类的静态成员（p3-3、3-4、3-4-1）／ ✅ 3.4 变量及对象的生存期和作用域（p3-5、3-6、3-7）
+- 3.5 常量成员和常引用成员（**下一步**） ／ 3.6 成员对象和封闭类 ／ 3.7 友元 ／ 3.8 this 指针
 
 **3. 🔴 合上教材从零重写第 1 章的程序**（README §七 第 5 步）—— 实践课是上机闭卷，这些必须能默写：常量指针三种写法 / `*pointValue(&oneY)=40` / `new`-`delete` 配对 / 函数重载只看参数列表 / 引用与指针的区别。
 
