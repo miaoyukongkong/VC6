@@ -1,38 +1,33 @@
-# VC++ 6.0 ???????
+# VC6 å·¥ç¨‹è¾“å‡º
+Debug/
+Release/
+
+# VC6 ç¼–è¯‘äº§ç‰©
+*.obj
+*.exe
+*.ilk
+*.pdb
+*.pch
+*.exp
+*.lib
+*.idb
+*.sbr
+*.bsc
+
+# VC6 IDE ç¼“å­˜ä¸Žç”¨æˆ·è®¾ç½®
 *.ncb
 *.opt
 *.plg
 *.aps
 *.clw
 *.suo
-*.obj
-*.exe
-*.ilk
-*.pdb
-*.pch
-*.idb
-*.exp
-*.lib
-*.sbr
-*.bsc
-Debug/
-Release/
 
-# ?????
+# ä¸´æ—¶æ–‡ä»¶
+*.bak
+*.log
+*.tmp
+
+# ç³»ç»Ÿæ–‡ä»¶
 Thumbs.db
 desktop.ini
 .DS_Store
-# ???????
-*.bak
-# VC6 ¹¹½¨²úÎï£¨Debug Ä¿Â¼ÒÑÅÅ³ý£¬´Ë´¦²¹µ¥ÎÄ¼þ£©
-*.pch
-*.idb
-*.ilk
-*.pdb
-*.obj
-*.exe
-*.log
-
-# ×¢²á±í±¸·Ý
-reg-backup/
-tmp/
