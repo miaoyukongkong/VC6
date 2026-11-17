@@ -1,88 +1,62 @@
 #include <iostream>
+#include <string>
+#include <cstdlib>
 using namespace std;
-class myComplex
+
+class CDemo
 {
 private:
-	double real,imag;
+	int n;
 public:
-	myComplex();
-	myComplex(double r,double i);
-	void outCom();
-	myComplex operator-(const myComplex &c);
-	friend myComplex operator+(const myComplex &c1,const myComplex &c2);
-	friend myComplex operator-(const myComplex &c1,const myComplex &c2);
-	friend myComplex operator-(const myComplex &c1,double r);
-	friend myComplex operator-(double r,const myComplex &c1);
+	CDemo(int i=0):n(i){}
+	operator int() {return n;}
+	//前置形式
+	CDemo & operator++();
+	//后置形式
+	CDemo operator++(int);
+	//前置形式
+	CDemo & operator--();
+	//后置形式
+	CDemo operator--(int);
 };
-myComplex::myComplex()
+CDemo & CDemo::operator++()
 {
-	real=0;
-	imag=0;
+	n++;
+	return *this;
 }
-myComplex::myComplex(double r,double i)
+CDemo CDemo::operator++(int k)
 {
-	real=r;
-	imag=i;
+	//记录修改前的对象
+	CDemo tmp(*this);
+	n++;
+	//返回修改前的对象
+	return tmp;
 }
-void myComplex::outCom()
+CDemo & CDemo::operator--()
 {
-	cout<<"("<<real<<","<<imag<<")";
+	n--;
+	return *this;
 }
-myComplex myComplex::operator-(const myComplex &c)
+CDemo CDemo::operator--(int k)
 {
-	return myComplex(real-c.real,imag-c.imag);
-}
-myComplex operator+(const myComplex &c1,const myComplex &c2)
-{
-	return myComplex(c1.real+c2.real,c1.imag+c2.imag);
-}
-myComplex operator-(const myComplex &c1,const myComplex &c2)
-{
-	return myComplex(c1.real-c2.real,c1.imag-c2.imag);
-}
-myComplex operator-(const myComplex &c1,double r)
-{
-	return myComplex(c1.real-r,c1.imag);
-}
-myComplex operator-(double r,const myComplex &c1)
-{
-	return myComplex(r-c1.real,-c1.imag);
+	//记录修改前的对象
+	CDemo tmp(*this);
+	n--;
+	//返回修改前的对象
+	return tmp;
 }
 int main()
 {
-	//程序4-1-1，重载为友元函数
-	myComplex c1(1,2),c2(3,4),res;
-	c1.outCom();
-	cout<<"operator+";
-	c2.outCom();
-	cout<<"=";
-	res=c1+c2;
-	res.outCom();
-	cout<<endl;
-
-	c1.outCom();
-	cout<<"operator-";
-	c2.outCom();
-	cout<<"=";
-	res=c1-c2;
-	res.outCom();
-	cout<<endl;
-
-	c1.outCom();
-	cout<<"operator-";
-	cout<<"  5";
-	cout<<"=";
-	res=c1-5;
-	res.outCom();
-	cout<<endl;
-
-	cout<<"5  ";
-	cout<<"operator-";
-	c1.outCom();
-	cout<<"=";
-	res=5-c1;
-	res.outCom();
-	cout<<endl;
+	//程序4-8，自增自减运算符重载为成员函数
+	CDemo d(10);
+	cout<<(d++)<<",";
+	cout<<d<<endl;
+	cout<<(++d)<<",";
+	cout<<d<<endl;
+	cout<<(d--)<<",";
+	cout<<d<<endl;
+	cout<<(--d)<<",";
+	cout<<d<<endl;
 
 	return 0;
 }
